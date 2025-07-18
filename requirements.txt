@@ -1,0 +1,5 @@
+moviepy==1.0.3
+fastapi
+uvicorn
+pydantic
+opencv-python
