@@ -89,7 +89,7 @@ async def generate_background_left_base64(req: BackgroundVideoLeftRightRequest):
     return JSONResponse(content={"video_base64": video_b64})
 
 @app.post("/generate-text-left/")
-async def create_combine_video_base64(req: TextVideoRequest):
+async def create_combine_video_base64_left(req: TextVideoRequest):
     video_data = req.video_base64
     if video_data.startswith("data:video"):
         video_data = video_data.split(",")[-1]
@@ -108,7 +108,7 @@ async def generate_background_right_base64(req: BackgroundVideoLeftRightRequest)
     return JSONResponse(content={"video_base64": video_b64})
 
 @app.post("/generate-text-right/")
-async def create_combine_video_base64(req: TextVideoRequest):
+async def create_combine_video_base64_right(req: TextVideoRequest):
     video_data = req.video_base64
     if video_data.startswith("data:video"):
         video_data = video_data.split(",")[-1]
