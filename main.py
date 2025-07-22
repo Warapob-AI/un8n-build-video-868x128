@@ -63,12 +63,16 @@ async def create_multi_images_video_base64(req: VideoMultiImagesRequest):
         fps=req.fps,
         count=req.count
     )
+    
     return JSONResponse(content={"video_base64": video_b64})
 
 @app.post("/generate-background-video-base64/")
 async def create_background_video_base64(req: BackgroundVideoRequest):
     video_binary = base64.b64decode(req.video_base64.split(",")[-1])
-    out_b64 = generate_background_video_base64(video_binary, req.opacity)
+    out_b64 = await asyncio.to_thread(
+        generate_background_video_base64, 
+        video_binary, 
+        req.opacity)
     return JSONResponse(content={"video_base64": out_b64})
 
 @app.post("/generate-text-center/")
@@ -77,8 +81,17 @@ async def create_combine_video_base64(req: TextVideoRequest):
     if video_data.startswith("data:video"):
         video_data = video_data.split(",")[-1]
     video_bytes = base64.b64decode(video_data)
+
     # ✨ ส่ง video_bytes ตรง ๆ
-    final_video_bytes = generate_text_center(req.text, req.font_bin, video_bytes, req.color, req.width, req.height)
+    final_video_bytes = await asyncio.to_thread( 
+        generate_text_center, 
+        req.text, 
+        req.font_bin, 
+        video_bytes, 
+        req.color, 
+        req.width, 
+        req.height)
+    
     # ✨ Encode base64 และส่งกลับ
     video_b64 = base64.b64encode(final_video_bytes).decode('utf-8')
     return JSONResponse(content={"video_base64": video_b64})
@@ -86,7 +99,12 @@ async def create_combine_video_base64(req: TextVideoRequest):
 @app.post("/generate-background-left-base64/")
 async def generate_background_left_base64(req: BackgroundVideoLeftRightRequest):
     video_binary = base64.b64decode(req.video_base64.split(",")[-1])
-    video_bytes = process_video_set_left_background(video_binary, req.background_color_hex)
+
+    video_bytes = await asyncio.to_thread(
+        process_video_set_left_background, 
+        video_binary, 
+        req.background_color_hex)
+    
     video_b64 = base64.b64encode(video_bytes).decode("utf-8")
     return JSONResponse(content={"video_base64": video_b64})
 
@@ -97,7 +115,16 @@ async def create_combine_video_base64(req: TextVideoRequest):
         video_data = video_data.split(",")[-1]
     video_bytes = base64.b64decode(video_data)
     # ✨ ส่ง video_bytes ตรง ๆ
-    final_video_bytes = generate_text_left(req.text, req.font_bin, video_bytes, req.color, req.width, req.height)
+
+    final_video_bytes = await asyncio.to_thread(
+        generate_text_left,
+        req.text, 
+        req.font_bin, 
+        video_bytes, 
+        req.color, 
+        req.width, 
+        req.height)
+    
     # ✨ Encode base64 และส่งกลับ
     video_b64 = base64.b64encode(final_video_bytes).decode('utf-8')
     return JSONResponse(content={"video_base64": video_b64})
@@ -105,7 +132,12 @@ async def create_combine_video_base64(req: TextVideoRequest):
 @app.post("/generate-background-right-base64/")
 async def generate_background_right_base64(req: BackgroundVideoLeftRightRequest):
     video_binary = base64.b64decode(req.video_base64.split(",")[-1])
-    video_bytes = process_video_set_right_background(video_binary, req.background_color_hex)
+
+    video_bytes = await asyncio.to_thread(
+        process_video_set_right_background, 
+        video_binary, 
+        req.background_color_hex)
+    
     video_b64 = base64.b64encode(video_bytes).decode("utf-8")
     return JSONResponse(content={"video_base64": video_b64})
 
@@ -116,7 +148,15 @@ async def create_combine_video_base64(req: TextVideoRequest):
         video_data = video_data.split(",")[-1]
     video_bytes = base64.b64decode(video_data)
     # ✨ ส่ง video_bytes ตรง ๆ
-    final_video_bytes = generate_text_right(req.text, req.font_bin, video_bytes, req.color, req.width, req.height)
+    final_video_bytes = await asyncio.to_thread(
+        generate_text_right,
+        req.text, 
+        req.font_bin, 
+        video_bytes, 
+        req.color, 
+        req.width, 
+        req.height)
+    
     # ✨ Encode base64 และส่งกลับ
     video_b64 = base64.b64encode(final_video_bytes).decode('utf-8')
     return JSONResponse(content={"video_base64": video_b64})
