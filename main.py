@@ -44,6 +44,7 @@ class VideoMultiImagesRequest(BaseModel):
 def index():
     return {"message": "Hello from FastAPI!"}
 
+# เปลี่ยนจากรูปเป็นวีดีโอ
 @app.post("/generate-multi-images-video-base64/")
 async def create_multi_images_video_base64(req: VideoMultiImagesRequest):
     # แปลง base64 image list -> binary list
