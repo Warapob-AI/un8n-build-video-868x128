@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import base64
+import asyncio
 
 from multi_image.generate_video_base64 import generate_multi_images_video_base64
 
@@ -53,7 +54,8 @@ async def create_multi_images_video_base64(req: VideoMultiImagesRequest):
         for b64_string in req.array_image_base64
     ]
 
-    video_b64 = generate_multi_images_video_base64(
+    video_b64 = await asyncio.to_thread(
+        generate_multi_images_video_base64,
         images_bytes_list,
         width=req.width,
         height=req.height,
